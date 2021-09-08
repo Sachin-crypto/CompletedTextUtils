@@ -24,6 +24,7 @@ export default function TextForm(props) {
         const finalSentence = lowCase.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
 
         settext(finalSentence)
+        props.showAlert("First character of each word has been capitalize", "success")
 
         // ^ matches the beginning of the string.
         // \w matches any word character.
@@ -35,9 +36,10 @@ export default function TextForm(props) {
 
     
     const handleCopy = ()=>{
-        let text = document.getElementById('myBox');
-        text.select();
-        navigator.clipboard.writeText(text.value)
+        // let text = document.getElementById('myBox');
+        // text.select();
+        navigator.clipboard.writeText(text)
+        document.getSelection().removeAllRanges()
         props.showAlert("Copied to clipboard", "success")
     }
 
@@ -74,17 +76,17 @@ export default function TextForm(props) {
     return (
         <>
         <div className="container" style={{color: props.mode==='dark'? 'white':'black'}}>
-            <h1>{props.heading}</h1>
+            <h1 className="mb-3">{props.heading}</h1>
             <div className="mb-3">
                 
                 <textarea className="form-control" value={text} onChange={handleOnChange} style={{backgroundColor: props.mode==='dark'? '#091e33':'white', color: props.mode==='dark'? 'white':'black'}} id="myBox" rows="8"></textarea>
             </div>
-            <button className="btn btn-primary" onClick={handleUpClick}>Convert to Uppercase</button>
-            <button className="btn btn-primary mx-2" onClick={handleloClick}>Convert to Lowercase</button>
-            <button className="btn btn-primary mx-2" onClick={handlecapitalize}>Capitalize</button>
-            <button className="btn btn-primary mx-2" onClick={handleCopy}>Copy text</button>
-            <button className="btn btn-danger mx-2" onClick={handleClear}>Clear</button>
-            <button className="btn btn-success mx-2" onClick={saveFile}>Save</button>
+            <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleUpClick}>Convert to Uppercase</button>
+            <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleloClick}>Convert to Lowercase</button>
+            <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handlecapitalize}>Capitalize</button>
+            <button disabled={text.length===0} className="btn btn-primary mx-1 my-1" onClick={handleCopy}>Copy text</button>
+            <button disabled={text.length===0} className="btn btn-danger mx-1 my-1" onClick={handleClear}>Clear</button>
+            <button disabled={text.length===0} className="btn btn-success mx-1 my-1" onClick={saveFile}>Save</button>
             {/* <button className="btn btn-danger mx-2" onClick={handleRedundandcy}>Remove Redundant Words</button> */}
             
             
@@ -95,10 +97,10 @@ export default function TextForm(props) {
         <div className="container my-3" style={{color: props.mode==='dark'? 'white':'black'}}>
             <h2>Your text summary</h2>
             
-            <p>{text.split(" ").length} <b>words</b>  and {text.length} <b>characters</b></p>
+            <p>{text.split(/\s+/).filter((element)=>{return element.length!==0}).length} <b>words</b>  and {text.length} <b>characters</b></p>
             <p>{Math.round(0.008 * text.split(" ").length)} <strong>Minutes read</strong></p>
             <h2>Preview</h2>
-            <p>{text.length>0?text:"Enter some text above to preview it here"}</p>
+            <p>{text.length>0?text:"Nothing to preview..."}</p>
         </div>
         </>
         
